@@ -10,6 +10,12 @@ var http = require('http');
 var fs = require('fs');
 var port = 3010;
 
+var stylesheet = fs.readFileSync('gallery.css');
+
+var imageNames = ['ace.jpg', 'bubble.jpg', 'chess.jpg', 'fern.jpg','mobile.jpg'];
+
+
+
 function serveImage(filename, req, res) {
   fs.readFile('images/' +filename, function(err, body){
     if(err){
@@ -26,22 +32,47 @@ function serveImage(filename, req, res) {
 var server = http.createServer(function(req, res){
 
   switch(req.url){
+    case '/gallery':
+    var gHtml = imageNames.map(function(filename){
+      return '  <image src="'+ filename+'"alt="a fishing ace at work">';
+    }).join('');
+    var html = "<!doctype html>";
+        html +="<head>"
+        html +=   "<title>Gallery</title>"
+        html +='   <link href ="gallery.css" rel="stylesheet" type="text/css">';
+        html +="</head>";
+        html +='<body>';
+        html +='  <h1>Gallery</h1>';
+        html +=gHtml;
+        html +="  <h1>Hello</h1> Time is " + Date.now();
+        html +='</body>';
+    res.end(html);
+    break;
     case "/chess":
+    case "/chess.jpg":
       serveImage('chess.jpg',req, res)
       break;
+    case '/gallery.css':
+      res.setHeader('Content-Type', 'text/css');
+      res.end(stylesheet);
+      break;
     case "/ace":
+    case "/ace.jpg":
+    case "/ace.jpeg":
       serveImage('ace.jpg',req,res)
         break;
     case "/bubble":
+    case "/bubble.jpg":
         serveImage('bubble.jpg',req,res)
         break;
     case "/fern":
     case "/fern/":
     case "/fern.jpg":
-    case "/fern.jper":
+    case "/fern.jpeg":
         serveImage('fern.jpg',req,res)
         break;
     case "/mobile":
+    case "/mobile.jpg":
         serveImage('mobile.jpg',req,res)
         break;
 
